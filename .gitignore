@@ -15,9 +15,3 @@
 
 # php-cs-fixer cache
 .php_cs.cache
-
-# phpunit cache
-.phpunit.result.cache
-
-# test logs
-/tests/logs/*

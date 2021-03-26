@@ -43,6 +43,6 @@
     </issueHandlers>
 
     <plugins>
-        <pluginClass class="Psl\Integration\Psalm\Plugin" />
+        <pluginClass class="Psl\Psalm\Plugin" />
     </plugins>
 </psalm>
