@@ -7,13 +7,11 @@ namespace Psl\Psalm\EventHandler\Type\Shape;
 use Psalm\Plugin\EventHandler\Event\FunctionReturnTypeProviderEvent;
 use Psalm\Plugin\EventHandler\FunctionReturnTypeProviderInterface;
 use Psalm\Type;
-use Psl\Iter;
-use Psl\Type\TypeInterface;
 
 final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInterface
 {
     /**
-     * @return array<lowercase-string>
+     * @return non-empty-list<lowercase-string>
      */
     public static function getFunctionIds(): array
     {
@@ -24,9 +22,9 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
 
     public static function getFunctionReturnType(FunctionReturnTypeProviderEvent $event): ?Type\Union
     {
-        $argument = Iter\first($event->getCallArgs());
+        $argument = $event->getCallArgs()[0] ?? null;
         if (null === $argument) {
-            return new Type\Union([new Type\Atomic\TGenericObject(TypeInterface::class, [
+            return new Type\Union([new Type\Atomic\TGenericObject('Psl\Type\TypeInterface', [
                 new Type\Union([
                     new Type\Atomic\TArray([
                         new Type\Union([new Type\Atomic\TArrayKey()]),
@@ -39,7 +37,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
         $statements_source = $event->getStatementsSource();
         $type = $statements_source->getNodeTypeProvider()->getType($argument->value);
         if (null === $type) {
-            return new Type\Union([new Type\Atomic\TGenericObject(TypeInterface::class, [
+            return new Type\Union([new Type\Atomic\TGenericObject('Psl\Type\TypeInterface', [
                 new Type\Union([
                     new Type\Atomic\TArray([
                         new Type\Union([new Type\Atomic\TArrayKey()]),
@@ -52,7 +50,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
         $atomic = $type->getAtomicTypes();
         $argument_shape = $atomic['array'] ?? null;
         if (!$argument_shape instanceof Type\Atomic\TKeyedArray) {
-            return new Type\Union([new Type\Atomic\TGenericObject(TypeInterface::class, [
+            return new Type\Union([new Type\Atomic\TGenericObject('Psl\Type\TypeInterface', [
                 new Type\Union([
                     new Type\Atomic\TArray([
                         new Type\Union([new Type\Atomic\TArrayKey()]),
@@ -64,7 +62,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
 
         $properties = [];
         foreach ($argument_shape->properties as $name => $value) {
-            $type = Iter\first($value->getAtomicTypes());
+            $type = \array_values($value->getAtomicTypes())[0] ?? null;
             if (!$type instanceof Type\Atomic\TGenericObject) {
                 return null;
             }
@@ -75,7 +73,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
             $properties[$name] = $property_type;
         }
 
-        return new Type\Union([new Type\Atomic\TGenericObject(TypeInterface::class, [
+        return new Type\Union([new Type\Atomic\TGenericObject('Psl\Type\TypeInterface', [
             new Type\Union([
                 new Type\Atomic\TKeyedArray($properties)
             ])

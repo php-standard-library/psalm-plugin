@@ -7,12 +7,11 @@ namespace Psl\Psalm\EventHandler\Type\Optional;
 use Psalm\Plugin\EventHandler\Event\FunctionReturnTypeProviderEvent;
 use Psalm\Plugin\EventHandler\FunctionReturnTypeProviderInterface;
 use Psalm\Type;
-use Psl\Iter;
 
 final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInterface
 {
     /**
-     * @return array<lowercase-string>
+     * @return non-empty-list<lowercase-string>
      */
     public static function getFunctionIds(): array
     {
@@ -23,15 +22,15 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
 
     public static function getFunctionReturnType(FunctionReturnTypeProviderEvent $event): ?Type\Union
     {
-        $argument = Iter\first($event->getCallArgs());
+        $argument = $event->getCallArgs()[0] ?? null;
         if (null === $argument) {
             return null;
         }
 
         $type = $event
-        ->getStatementsSource()
-        ->getNodeTypeProvider()
-        ->getType($argument->value);
+            ->getStatementsSource()
+            ->getNodeTypeProvider()
+            ->getType($argument->value);
 
         if (null === $type) {
             return null;
