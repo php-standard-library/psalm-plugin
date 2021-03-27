@@ -8,6 +8,8 @@ use Psalm\Plugin\EventHandler\Event\FunctionReturnTypeProviderEvent;
 use Psalm\Plugin\EventHandler\FunctionReturnTypeProviderInterface;
 use Psalm\Type;
 
+use function array_values;
+
 final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInterface
 {
     /**
@@ -62,7 +64,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
 
         $properties = [];
         foreach ($argument_shape->properties as $name => $value) {
-            $type = \array_values($value->getAtomicTypes())[0] ?? null;
+            $type = array_values($value->getAtomicTypes())[0] ?? null;
             if (!$type instanceof Type\Atomic\TGenericObject) {
                 return null;
             }
