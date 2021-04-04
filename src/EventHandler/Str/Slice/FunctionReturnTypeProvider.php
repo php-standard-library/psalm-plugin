@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Psl\Psalm\EventHandler\Type\Optional;
+namespace Psl\Psalm\EventHandler\Str\Slice;
 
 use Psalm\Plugin\EventHandler\Event\FunctionReturnTypeProviderEvent;
 use Psalm\Plugin\EventHandler\FunctionReturnTypeProviderInterface;
@@ -17,20 +17,19 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
     public static function getFunctionIds(): array
     {
         return [
-            'psl\type\optional'
+            'psl\str\slice',
+            'psl\str\byte\slice',
+            'psl\str\grapheme\slice'
         ];
     }
 
     public static function getFunctionReturnType(FunctionReturnTypeProviderEvent $event): ?Type\Union
     {
         $argument_type = Argument::getType($event->getCallArgs(), $event->getStatementsSource(), 0);
-        if (null === $argument_type) {
-            return null;
+        if ($argument_type === null || !$argument_type->hasLowercaseString()) {
+            return Type::getString();
         }
 
-        $clone = clone $argument_type;
-        $clone->possibly_undefined = true;
-
-        return $clone;
+        return new Type\Union([new Type\Atomic\TLowercaseString()]);
     }
 }

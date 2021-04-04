@@ -7,6 +7,7 @@ namespace Psl\Psalm\EventHandler\Type\Shape;
 use Psalm\Plugin\EventHandler\Event\FunctionReturnTypeProviderEvent;
 use Psalm\Plugin\EventHandler\FunctionReturnTypeProviderInterface;
 use Psalm\Type;
+use Psl\Psalm\Argument;
 
 use function array_values;
 
@@ -24,8 +25,8 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
 
     public static function getFunctionReturnType(FunctionReturnTypeProviderEvent $event): ?Type\Union
     {
-        $argument = $event->getCallArgs()[0] ?? null;
-        if (null === $argument) {
+        $argument_type = Argument::getType($event->getCallArgs(), $event->getStatementsSource(), 0);
+        if (null === $argument_type) {
             return new Type\Union([new Type\Atomic\TGenericObject('Psl\Type\TypeInterface', [
                 new Type\Union([
                     new Type\Atomic\TArray([
@@ -36,21 +37,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
             ])]);
         }
 
-        $statements_source = $event->getStatementsSource();
-        $type = $statements_source->getNodeTypeProvider()->getType($argument->value);
-        if (null === $type) {
-            return new Type\Union([new Type\Atomic\TGenericObject('Psl\Type\TypeInterface', [
-                new Type\Union([
-                    new Type\Atomic\TArray([
-                        new Type\Union([new Type\Atomic\TArrayKey()]),
-                        new Type\Union([new Type\Atomic\TMixed()])
-                    ])
-                ])
-            ])]);
-        }
-
-        $atomic = $type->getAtomicTypes();
-        $argument_shape = $atomic['array'] ?? null;
+        $argument_shape = $argument_type->getAtomicTypes()['array'] ?? null;
         if (!$argument_shape instanceof Type\Atomic\TKeyedArray) {
             return new Type\Union([new Type\Atomic\TGenericObject('Psl\Type\TypeInterface', [
                 new Type\Union([
@@ -61,6 +48,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
                 ])
             ])]);
         }
+
 
         $properties = [];
         foreach ($argument_shape->properties as $name => $value) {
