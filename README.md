@@ -11,7 +11,7 @@
 Supported installation method is via [composer](https://getcomposer.org):
 
 ```shell
-composer install php-standard-library/psalm-plugin --dev
+composer require php-standard-library/psalm-plugin --dev
 ```
 
 ## Usage
