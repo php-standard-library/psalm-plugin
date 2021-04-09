@@ -34,6 +34,9 @@ final class Plugin implements PluginEntryPointInterface
         yield EventHandler\Iter\Last\FunctionReturnTypeProvider::class;
         yield EventHandler\Iter\Count\FunctionReturnTypeProvider::class;
 
+        // Psl\Regex hooks
+        yield EventHandler\Regex\CaptureGroups\FunctionReturnTypeProvider::class;
+
         // Psl\Str hooks
         yield EventHandler\Str\After\FunctionReturnTypeProvider::class;
         yield EventHandler\Str\Before\FunctionReturnTypeProvider::class;
