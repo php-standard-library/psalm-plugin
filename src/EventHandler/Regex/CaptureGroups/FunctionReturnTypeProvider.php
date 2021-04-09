@@ -7,6 +7,7 @@ namespace Psl\Psalm\EventHandler\Regex\CaptureGroups;
 use Psalm\Plugin\EventHandler\Event\FunctionReturnTypeProviderEvent;
 use Psalm\Plugin\EventHandler\FunctionReturnTypeProviderInterface;
 use Psalm\Type;
+use Psl\Psalm\Argument;
 
 final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInterface
 {
@@ -22,30 +23,21 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
 
     public static function getFunctionReturnType(FunctionReturnTypeProviderEvent $event): ?Type\Union
     {
-        $statements_source = $event->getStatementsSource();
-        $call_args = $event->getCallArgs();
-
-        $argument = $call_args[0] ?? null;
-        if (null === $argument) {
+        $argument_type = Argument::getType($event->getCallArgs(), $event->getStatementsSource(), 0);
+        if (null === $argument_type) {
             return self::fallbackType();
         }
 
-        $argument_value = $argument->value;
-        $type = $statements_source->getNodeTypeProvider()->getType($argument_value);
-        if (null === $type) {
-            return self::fallbackType();
-        }
-
-        $atomic = $type->getAtomicTypes();
+        $atomic = $argument_type->getAtomicTypes();
         $capture_groups = $atomic['array'] ?? null;
         if (!$capture_groups instanceof Type\Atomic\TKeyedArray) {
             return self::fallbackType();
         }
 
-        $string = static fn (): Type\Union => new Type\Union([new Type\Atomic\TString()]);
         $properties = [
-            0 => $string()
+            0 => Type::getString()
         ];
+
         foreach ($capture_groups->properties as $value) {
             $type = array_values($value->getAtomicTypes())[0] ?? null;
             if (!$type instanceof Type\Atomic\TLiteralInt && !$type instanceof Type\Atomic\TLiteralString) {
@@ -54,7 +46,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
 
             $name = $type->value;
 
-            $properties[$name] = $string();
+            $properties[$name] = Type::getString();
         }
 
         return new Type\Union([new Type\Atomic\TGenericObject('Psl\Type\TypeInterface', [
@@ -68,7 +60,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
     {
         return new Type\Union([new Type\Atomic\TGenericObject('Psl\Type\TypeInterface', [
             new Type\Union([
-                new Type\Atomic\TArray([
+                new Type\Atomic\TNonEmptyArray([
                     new Type\Union([new Type\Atomic\TArrayKey()]),
                     new Type\Union([new Type\Atomic\TString()])
                 ])
