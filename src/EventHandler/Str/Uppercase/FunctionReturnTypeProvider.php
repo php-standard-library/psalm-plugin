@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Psl\Psalm\EventHandler\Type\Optional;
+namespace Psl\Psalm\EventHandler\Str\Uppercase;
 
 use Psalm\Plugin\EventHandler\Event\FunctionReturnTypeProviderEvent;
 use Psalm\Plugin\EventHandler\FunctionReturnTypeProviderInterface;
@@ -17,7 +17,8 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
     public static function getFunctionIds(): array
     {
         return [
-            'psl\type\optional'
+            'psl\str\uppercase',
+            'psl\str\byte\uppercase',
         ];
     }
 
@@ -25,12 +26,18 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
     {
         $argument_type = Argument::getType($event->getCallArgs(), $event->getStatementsSource(), 0);
         if (null === $argument_type) {
-            return null;
+            return Type::getString();
         }
 
-        $clone = clone $argument_type;
-        $clone->possibly_undefined = true;
+        $string_argument_type = $argument_type->getAtomicTypes()['string'] ?? null;
+        if (null === $string_argument_type) {
+            return Type::getString();
+        }
 
-        return $clone;
+        if ($string_argument_type instanceof Type\Atomic\TNonEmptyString) {
+            return new Type\Union([new Type\Atomic\TNonEmptyString()]);
+        }
+
+        return Type::getString();
     }
 }
