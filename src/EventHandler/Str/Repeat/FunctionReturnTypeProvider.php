@@ -26,7 +26,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
     public static function getFunctionReturnType(FunctionReturnTypeProviderEvent $event): ?Type\Union
     {
         $argument_type = Argument::getType($event->getCallArgs(), $event->getStatementsSource(), 0);
-        if ($argument_type === null || !$argument_type->hasLowercaseString()) {
+        if ($argument_type === null) {
             return Type::getString();
         }
 
@@ -43,12 +43,12 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
             return new Type\Union([new Type\Atomic\TLowercaseString()]);
         }
 
-        if ($string_argument_type instanceof Type\Atomic\TLiteralString) {
+        if ($argument_type->hasLiteralString()) {
             $multiplier_argument_type = Argument::getType($event->getCallArgs(), $event->getStatementsSource(), 1);
             if (null !== $multiplier_argument_type && $multiplier_argument_type->hasLiteralInt()) {
                 /** @psalm-suppress MissingThrowsDocblock */
                 return Type::getString(str_repeat(
-                    $string_argument_type->value,
+                    $argument_type->getSingleStringLiteral()->value,
                     $multiplier_argument_type->getSingleIntLiteral()->value
                 ));
             }

@@ -19,7 +19,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
     public static function getFunctionIds(): array
     {
         return [
-            'psl\str\count',
+            'psl\iter\count',
         ];
     }
 
@@ -56,7 +56,22 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
 
         // array{foo: bar} -> literal-int(1)
         if ($array_argument_type instanceof Type\Atomic\TKeyedArray) {
-            return Type::getInt(false, count($array_argument_type->properties));
+            // Psalm allows extra properties in keyed arrays, so we can't return a literal integer
+            // for this.
+            //
+            // return Type::getInt(false, count($array_argument_type->properties));
+
+            if (count($array_argument_type->properties) >= 1) {
+                return Type::getPositiveInt();
+            }
+
+            return Type::getInt();
+        }
+
+        if ($array_argument_type instanceof Type\Atomic\TArray) {
+            if ($array_argument_type->type_params[0]->isEmpty() && $array_argument_type->type_params[1]->isEmpty()) {
+                return Type::getInt(false, 0);
+            }
         }
 
         return Type::getInt();
