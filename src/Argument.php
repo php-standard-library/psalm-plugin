@@ -12,7 +12,7 @@ final class Argument
 {
     /**
      * @param list<PhpParser\Node\Arg> $arguments
-     * @param 0|positive-int $index
+     * @param int<0, max> $index
      */
     public static function getType(
         array $arguments,
