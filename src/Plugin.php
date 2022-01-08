@@ -29,6 +29,9 @@ final class Plugin implements PluginEntryPointInterface
      */
     private function getHooks(): iterable
     {
+        // Psl\Fun hooks
+        yield EventHandler\Fun\Pipe\PipeArgumentsProvider::class;
+
         // Psl\Iter hooks
         yield EventHandler\Iter\First\FunctionReturnTypeProvider::class;
         yield EventHandler\Iter\FirstKey\FunctionReturnTypeProvider::class;

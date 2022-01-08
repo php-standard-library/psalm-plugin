@@ -1,6 +1,6 @@
 name: "coding standards"
 
-on: 
+on:
   pull_request: ~
   push: ~
 
@@ -15,7 +15,7 @@ jobs:
       - name: "installing PHP"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "7.4"
+          php-version: "8.1"
           ini-values: memory_limit=-1
           tools: composer:v2, cs2pr
           extensions: bcmath, mbstring, intl, sodium, json
@@ -27,4 +27,4 @@ jobs:
         run: "php vendor/bin/phpcs"
 
       - name: "checking coding standards ( php-cs-fixer )"
-        run: "php vendor/bin/php-cs-fixer fix --dry-run --diff --ansi"
+        run: "PHP_CS_FIXER_IGNORE_ENV=1 php vendor/bin/php-cs-fixer fix --dry-run --diff --ansi"

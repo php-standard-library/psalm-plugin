@@ -49,6 +49,13 @@ Psalm assumes that `$input` is of type `array<"age"|"location"|"name", array<"ci
 If we enable the `php-standard-library/psalm-plugin` plugin, you will get a more specific
 and correct type of `array{name: string, age: int, location?: array{city: string, state: string, country: string}}`.
 
+## Compatibility
+
+| PSL | Psalm plugin |
+|-----|--------------|
+| 2.x | 2.x          |
+| 1.x | 1.x          |
+
 ## Sponsors
 
 Thanks to our sponsors and supporters:
