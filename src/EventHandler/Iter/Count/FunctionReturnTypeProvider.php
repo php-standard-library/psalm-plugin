@@ -39,7 +39,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
         if ($array_argument_type instanceof Type\Atomic\TNonEmptyList) {
             $count = $array_argument_type->count;
             if (null === $count) {
-                return Type::getPositiveInt();
+                return new Type\Union([new Type\Atomic\TIntRange(1, null)]);
             }
 
             return Type::getInt(false, $count);
@@ -48,7 +48,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
         if ($array_argument_type instanceof Type\Atomic\TNonEmptyArray) {
             $count = $array_argument_type->count;
             if (null === $count) {
-                return Type::getPositiveInt();
+                return new Type\Union([new Type\Atomic\TIntRange(1, null)]);
             }
 
             return Type::getInt(false, $count);
@@ -62,16 +62,14 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
             // return Type::getInt(false, count($array_argument_type->properties));
 
             if (count($array_argument_type->properties) >= 1) {
-                return Type::getPositiveInt();
+                return new Type\Union([new Type\Atomic\TIntRange(1, null)]);
             }
 
             return Type::getInt();
         }
 
-        if ($array_argument_type instanceof Type\Atomic\TArray) {
-            if ($array_argument_type->type_params[0]->isEmpty() && $array_argument_type->type_params[1]->isEmpty()) {
-                return Type::getInt(false, 0);
-            }
+        if (($array_argument_type instanceof Type\Atomic\TArray) && $array_argument_type->type_params[0]->isNever() && $array_argument_type->type_params[1]->isNever()) {
+            return Type::getInt(false, 0);
         }
 
         return Type::getInt();

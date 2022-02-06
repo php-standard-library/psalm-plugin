@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": "^7.4 || ^8.0",
-        "vimeo/psalm": "^4.6"
+        "vimeo/psalm": "^4.20 || ^5.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.18",
@@ -44,12 +44,15 @@
     },
     "config": {
         "process-timeout": 1200,
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": false
+        }
     },
     "extra": {
         "psalm": {
             "pluginClass": "Psl\\Psalm\\Plugin"
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "alpha"
 }
