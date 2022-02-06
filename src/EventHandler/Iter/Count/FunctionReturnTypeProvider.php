@@ -68,8 +68,10 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
             return Type::getInt();
         }
 
-        if (($array_argument_type instanceof Type\Atomic\TArray) && $array_argument_type->type_params[0]->isNever() && $array_argument_type->type_params[1]->isNever()) {
-            return Type::getInt(false, 0);
+        if ($array_argument_type instanceof Type\Atomic\TArray) {
+            if ($array_argument_type->type_params[0]->isNever() && $array_argument_type->type_params[1]->isNever()) {
+                return Type::getInt(false, 0);
+            }
         }
 
         return Type::getInt();
