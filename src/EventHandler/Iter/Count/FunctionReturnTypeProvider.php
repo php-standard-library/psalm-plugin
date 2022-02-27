@@ -77,7 +77,6 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
                     }
                 }
             }
-
         }
 
         return Type::getInt();
