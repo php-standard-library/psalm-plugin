@@ -54,24 +54,28 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
             return Type::getInt(false, $count);
         }
 
-        // array{foo: bar} -> literal-int(1)
+        // array{foo: bar} -> int<1, max>
+        // array{foo, bar, baz} -> int<3, max>
         if ($array_argument_type instanceof Type\Atomic\TKeyedArray) {
             // Psalm allows extra properties in keyed arrays, so we can't return a literal integer
-            // for this.
-            //
-            // return Type::getInt(false, count($array_argument_type->properties));
-
-            if (count($array_argument_type->properties) >= 1) {
-                return new Type\Union([new Type\Atomic\TIntRange(1, null)]);
+            if (($size = count($array_argument_type->properties)) >= 1) {
+                return new Type\Union([new Type\Atomic\TIntRange($size, null)]);
             }
 
             return Type::getInt();
         }
 
         if ($array_argument_type instanceof Type\Atomic\TArray) {
-            if ($array_argument_type->type_params[0]->isNever() && $array_argument_type->type_params[1]->isNever()) {
+            if (method_exists($array_argument_type, 'isEmptyArray') && $array_argument_type->isEmptyArray()) {
                 return Type::getInt(false, 0);
             }
+
+            if (method_exists($array_argument_type->type_params[0], 'isEmpty')) {
+                if ($array_argument_type->type_params[0]->isEmpty() && $array_argument_type->type_params[1]->isEmpty()) {
+                    return Type::getInt(false, 0);
+                }
+            }
+
         }
 
         return Type::getInt();
