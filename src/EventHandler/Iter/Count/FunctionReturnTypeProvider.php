@@ -71,8 +71,10 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
             }
 
             if (method_exists($array_argument_type->type_params[0], 'isEmpty')) {
-                if ($array_argument_type->type_params[0]->isEmpty() && $array_argument_type->type_params[1]->isEmpty()) {
-                    return Type::getInt(false, 0);
+                if ($array_argument_type->type_params[0]->isEmpty()) {
+                    if ($array_argument_type->type_params[1]->isEmpty()) {
+                        return Type::getInt(false, 0);
+                    }
                 }
             }
 
