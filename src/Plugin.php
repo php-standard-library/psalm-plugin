@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Psl\Psalm;
 
+use Psalm\Plugin\EventHandler\DynamicFunctionStorageProviderInterface;
 use Psalm\Plugin\EventHandler\FunctionReturnTypeProviderInterface;
 use Psalm\Plugin\PluginEntryPointInterface;
 use Psalm\Plugin\RegistrationInterface;
@@ -25,7 +26,9 @@ final class Plugin implements PluginEntryPointInterface
     }
 
     /**
-     * @return iterable<class-string<FunctionReturnTypeProviderInterface>>
+     * @template T
+     *
+     * @return iterable<class-string<FunctionReturnTypeProviderInterface>|class-string<DynamicFunctionStorageProviderInterface>>
      */
     private function getHooks(): iterable
     {
