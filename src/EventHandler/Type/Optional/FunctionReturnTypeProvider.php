@@ -28,9 +28,6 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
             return null;
         }
 
-        $clone = clone $argument_type;
-        $clone->possibly_undefined = true;
-
-        return $clone;
+        return $argument_type->setPossiblyUndefined(true);
     }
 }
