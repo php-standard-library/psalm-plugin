@@ -51,10 +51,11 @@ and correct type of `array{name: string, age: int, location?: array{city: string
 
 ## Compatibility
 
-| PSL | Psalm plugin |
-|-----|--------------|
-| 2.x | 2.x          |
-| 1.x | 1.x          |
+| PSL | Psalm plugin | Psalm |
+|-----|------------|-------|
+| 2.x | ^2.1       | v5    |
+| 2.x | ~2.0.0     | v4    |
+| 1.x | 1.x        | v4    |
 
 ## Sponsors
 

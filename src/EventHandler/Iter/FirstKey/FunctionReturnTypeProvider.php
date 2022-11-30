@@ -34,7 +34,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
         }
 
         if ($array_argument_type instanceof Type\Atomic\TNonEmptyArray) {
-            return clone $array_argument_type->type_params[0];
+            return $array_argument_type->type_params[0];
         }
 
         if ($array_argument_type instanceof Type\Atomic\TNonEmptyList) {
@@ -45,9 +45,9 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
             // TODO(azjezz): add support for this once psalm starts enforcing the shape order ( if ever ).
             //
             // foreach ($properties as $property) {
-            //     return clone $property;
+            //     return $property;
             // }
-            return clone $array_argument_type->getGenericKeyType();
+            return $array_argument_type->getGenericKeyType();
         }
 
         return null;

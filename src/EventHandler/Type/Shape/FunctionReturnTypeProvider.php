@@ -57,8 +57,8 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
                 return null;
             }
 
-            $property_type = clone $type->type_params[0];
-            $property_type->possibly_undefined = $value->possibly_undefined;
+            $property_type = $type->type_params[0];
+            $property_type = $property_type->setPossiblyUndefined($value->possibly_undefined);
 
             $properties[$name] = $property_type;
         }

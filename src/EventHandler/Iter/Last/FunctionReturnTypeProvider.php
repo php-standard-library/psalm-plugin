@@ -34,11 +34,11 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
         }
 
         if ($array_argument_type instanceof Type\Atomic\TNonEmptyArray) {
-            return clone $array_argument_type->type_params[1];
+            return $array_argument_type->type_params[1];
         }
 
         if ($array_argument_type instanceof Type\Atomic\TNonEmptyList) {
-            return clone $array_argument_type->type_param;
+            return $array_argument_type->type_param;
         }
 
         if ($array_argument_type instanceof Type\Atomic\TKeyedArray) {
@@ -50,8 +50,8 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
             //     $last_property = $property;
             // }
             //
-            // return clone $last_property;
-            return clone $array_argument_type->getGenericValueType();
+            // return $last_property;
+            return $array_argument_type->getGenericValueType();
         }
 
         return null;
