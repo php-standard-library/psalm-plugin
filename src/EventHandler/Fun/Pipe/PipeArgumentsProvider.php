@@ -46,7 +46,7 @@ final class PipeArgumentsProvider implements DynamicFunctionStorageProviderInter
         $pipe_storage->params = [
             ...array_map(
                 static fn(TClosure $callable, int $offset) => self::createParam(
-                    "fn_${offset}",
+                    "fn_{$offset}",
                     new Union([$callable]),
                 ),
                 $pipe_callables,
@@ -75,7 +75,7 @@ final class PipeArgumentsProvider implements DynamicFunctionStorageProviderInter
         DynamicTemplateProvider $template_provider,
         int $offset
     ): TTemplateParam {
-        return $template_provider->createTemplate("T${offset}");
+        return $template_provider->createTemplate("T{$offset}");
     }
 
     private static function createABClosure(
