@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Psl\Psalm\EventHandler\Fun\Pipe;
 
-use Closure;
 use Psalm\Plugin\DynamicFunctionStorage;
 use Psalm\Plugin\DynamicTemplateProvider;
 use Psalm\Plugin\EventHandler\DynamicFunctionStorageProviderInterface;
 use Psalm\Plugin\EventHandler\Event\DynamicFunctionStorageProviderEvent;
 use Psalm\Storage\FunctionLikeParameter;
-use Psalm\Type\Atomic\TClosure;
+use Psalm\Type\Atomic\TCallable;
 use Psalm\Type\Atomic\TTemplateParam;
 use Psalm\Type\Union;
 
@@ -35,7 +34,7 @@ final class PipeArgumentsProvider implements DynamicFunctionStorageProviderInter
 
         // Create AB closure pairs
         $pipe_callables = array_map(
-            static fn(int $callable_offset) => self::createABClosure(
+            static fn(int $callable_offset) => self::createABCallable(
                 self::createTemplateFromOffset($template_provider, $callable_offset),
                 self::createTemplateFromOffset($template_provider, $callable_offset + 1),
             ),
@@ -45,7 +44,7 @@ final class PipeArgumentsProvider implements DynamicFunctionStorageProviderInter
         $pipe_storage = new DynamicFunctionStorage();
         $pipe_storage->params = [
             ...array_map(
-                static fn(TClosure $callable, int $offset) => self::createParam(
+                static fn(TCallable $callable, int $offset) => self::createParam(
                     "fn_{$offset}",
                     new Union([$callable]),
                 ),
@@ -62,7 +61,7 @@ final class PipeArgumentsProvider implements DynamicFunctionStorageProviderInter
 
         // Pipe return type from templates T1 -> TLast (Where TLast could also be T1 when no arguments are provided.)
         $pipe_storage->return_type = new Union([
-            self::createABClosure(
+            self::createABCallable(
                 current($pipe_storage->templates),
                 end($pipe_storage->templates)
             )
@@ -78,14 +77,14 @@ final class PipeArgumentsProvider implements DynamicFunctionStorageProviderInter
         return $template_provider->createTemplate("T{$offset}");
     }
 
-    private static function createABClosure(
+    private static function createABCallable(
         TTemplateParam $aType,
         TTemplateParam $bType
-    ): TClosure {
+    ): TCallable {
         $a = self::createParam('input', new Union([$aType]));
         $b = new Union([$bType]);
 
-        return new TClosure(Closure::class, [$a], $b);
+        return new TCallable('callable', [$a], $b);
     }
 
     private static function createParam(string $name, Union $type): FunctionLikeParameter
