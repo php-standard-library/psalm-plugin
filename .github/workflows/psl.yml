@@ -1,0 +1,48 @@
+name: "static analysis on PSL"
+
+on:
+  pull_request: ~
+  push: ~
+  schedule:
+    - cron: '0 */3 * * *'
+
+jobs:
+  static-analysis:
+    name: "static analysis"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "checkout"
+        uses: "actions/checkout@v2"
+
+      - name: "installing PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "8.1"
+          ini-values: memory_limit=-1
+          tools: composer:v2, cs2pr
+          extensions: bcmath, mbstring, intl, sodium, json
+
+      - name: "Clone azjezz/psl"
+        uses: "GuillaumeFalourd/clone-github-repo-action@v2.2"
+        with:
+          branch: 'next'
+          owner: 'azjezz'
+          repository: 'psl'
+
+      - name: "Link current psalm-plugin"
+        working-directory: psl
+        run: |
+          composer config repositories.psalm-plugin path ../
+          composer require --dev 'php-standard-library/psalm-plugin:*@dev'
+
+      - name: "installing dependencies"
+        working-directory: psl
+        run: make install -j10 -O
+
+      - name: "running static analysis"
+        working-directory: psl
+        run: make static-analysis
+
+      - name: "calculating type coverage"
+        working-directory: psl
+        run: make type-coverage
