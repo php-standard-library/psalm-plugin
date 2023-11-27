@@ -7,8 +7,8 @@ on:
     - cron: '0 */3 * * *'
 
 jobs:
-  static-analysis:
-    name: "static analysis"
+  static-analysis-on-psl:
+    name: "static analysis on PSL"
     runs-on: "ubuntu-latest"
     steps:
       - name: "checkout"
