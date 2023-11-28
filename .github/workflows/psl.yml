@@ -33,7 +33,7 @@ jobs:
         working-directory: psl
         run: |
           composer config repositories.psalm-plugin path ../
-          composer require --dev 'php-standard-library/psalm-plugin:*@dev'
+          composer require --dev 'php-standard-library/psalm-plugin:*@dev' 'vimeo/psalm:>=5.16'
 
       - name: "installing dependencies"
         working-directory: psl
