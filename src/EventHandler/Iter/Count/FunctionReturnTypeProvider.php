@@ -35,16 +35,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
             return Type::getInt();
         }
 
-        // non-empty-array/non-empty-list -> positive-int / literal-int
-        if ($array_argument_type instanceof Type\Atomic\TNonEmptyList) {
-            $count = $array_argument_type->count;
-            if (null === $count) {
-                return new Type\Union([new Type\Atomic\TIntRange(1, null)]);
-            }
-
-            return Type::getInt(false, $count);
-        }
-
+        // non-empty-array -> positive-int / literal-int
         if ($array_argument_type instanceof Type\Atomic\TNonEmptyArray) {
             $count = $array_argument_type->count;
             if (null === $count) {

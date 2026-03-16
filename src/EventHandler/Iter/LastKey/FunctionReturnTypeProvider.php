@@ -37,10 +37,6 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
             return $array_argument_type->type_params[0];
         }
 
-        if ($array_argument_type instanceof Type\Atomic\TNonEmptyList) {
-            return Type::getInt();
-        }
-
         if ($array_argument_type instanceof Type\Atomic\TKeyedArray) {
             // TODO(azjezz): add support for this once psalm starts enforcing the shape order ( if ever ).
             //
