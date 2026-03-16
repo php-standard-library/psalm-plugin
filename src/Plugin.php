@@ -58,7 +58,8 @@ final class Plugin implements PluginEntryPointInterface
         yield EventHandler\Str\Split\FunctionReturnTypeProvider::class;
         yield EventHandler\Str\Uppercase\FunctionReturnTypeProvider::class;
 
-        // Psl\Iter hooks
+        // Psl\Type hooks
+        yield EventHandler\Type\Nullish\FunctionReturnTypeProvider::class;
         yield EventHandler\Type\Optional\FunctionReturnTypeProvider::class;
         yield EventHandler\Type\Shape\FunctionReturnTypeProvider::class;
     }
