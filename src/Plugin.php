@@ -12,6 +12,7 @@ use SimpleXMLElement;
 
 use function str_replace;
 
+/** @psalm-suppress UnusedClass - loaded externally by Psalm */
 final class Plugin implements PluginEntryPointInterface
 {
     public function __invoke(RegistrationInterface $registration, ?SimpleXMLElement $config = null): void
