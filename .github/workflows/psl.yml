@@ -22,27 +22,27 @@ jobs:
           tools: composer:v2, cs2pr
           extensions: bcmath, mbstring, intl, sodium, json
 
-      - name: "Clone azjezz/psl"
+      - name: "Clone php-standard-library/php-standard-library"
         uses: "GuillaumeFalourd/clone-github-repo-action@v2.2"
         with:
           branch: 'next'
-          owner: 'azjezz'
-          repository: 'psl'
+          owner: 'php-standard-library'
+          repository: 'php-standard-library'
 
       - name: "Link current psalm-plugin"
-        working-directory: psl
+        working-directory: php-standard-library
         run: |
           composer config repositories.psalm-plugin path ../
           composer require --dev 'php-standard-library/psalm-plugin:*@dev' 'vimeo/psalm:>=5.16'
 
       - name: "installing dependencies"
-        working-directory: psl
+        working-directory: php-standard-library
         run: make install -j10 -O
 
       - name: "running static analysis"
-        working-directory: psl
+        working-directory: php-standard-library
         run: make static-analysis
 
       - name: "calculating type coverage"
-        working-directory: psl
+        working-directory: php-standard-library
         run: make type-coverage
