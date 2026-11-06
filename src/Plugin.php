@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Psl\Psalm;
 
+use Override;
 use Psalm\Plugin\EventHandler\DynamicFunctionStorageProviderInterface;
 use Psalm\Plugin\EventHandler\FunctionReturnTypeProviderInterface;
 use Psalm\Plugin\PluginEntryPointInterface;
@@ -17,6 +18,7 @@ use function str_replace;
  */
 final class Plugin implements PluginEntryPointInterface
 {
+    #[Override]
     public function __invoke(RegistrationInterface $registration, ?SimpleXMLElement $config = null): void
     {
         require_once __DIR__ . '/Argument.php';
