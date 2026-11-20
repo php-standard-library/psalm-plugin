@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Psl\Psalm\EventHandler\Str\Splice;
 
+use Override;
 use Psalm\Plugin\EventHandler\Event\FunctionReturnTypeProviderEvent;
 use Psalm\Plugin\EventHandler\FunctionReturnTypeProviderInterface;
 use Psalm\Type;
@@ -14,6 +15,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
     /**
      * @return non-empty-list<lowercase-string>
      */
+    #[Override]
     public static function getFunctionIds(): array
     {
         return [
@@ -22,6 +24,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
         ];
     }
 
+    #[Override]
     public static function getFunctionReturnType(FunctionReturnTypeProviderEvent $event): ?Type\Union
     {
         $argument_type = Argument::getType($event->getCallArgs(), $event->getStatementsSource(), 0);

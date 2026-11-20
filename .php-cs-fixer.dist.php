@@ -1,8 +1,8 @@
 <?php
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setFinder(
-        \Symfony\Component\Finder\Finder::create()
+        PhpCsFixer\Finder::create()
             ->in([
                 __DIR__ . '/src',
             ])
@@ -23,7 +23,7 @@ return PhpCsFixer\Config::create()
         'list_syntax' => [
             'syntax' => 'short',
         ],
-        'lowercase_constants' => true,
+        'constant_case' => true,
         'multiline_comment_opening_closing' => true,
         'native_function_casing' => true,
         'no_empty_phpdoc' => true,

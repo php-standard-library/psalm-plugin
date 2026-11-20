@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Psl\Psalm\EventHandler\Fun\Pipe;
 
-use Closure;
+use Override;
 use Psalm\Plugin\DynamicFunctionStorage;
 use Psalm\Plugin\DynamicTemplateProvider;
 use Psalm\Plugin\EventHandler\DynamicFunctionStorageProviderInterface;
 use Psalm\Plugin\EventHandler\Event\DynamicFunctionStorageProviderEvent;
 use Psalm\Storage\FunctionLikeParameter;
+use Psalm\Type;
 use Psalm\Type\Atomic\TClosure;
 use Psalm\Type\Atomic\TTemplateParam;
 use Psalm\Type\Union;
@@ -23,11 +24,13 @@ final class PipeArgumentsProvider implements DynamicFunctionStorageProviderInter
     /**
      * @return array<lowercase-string>
      */
+    #[Override]
     public static function getFunctionIds(): array
     {
         return ['psl\fun\pipe'];
     }
 
+    #[Override]
     public static function getFunctionStorage(DynamicFunctionStorageProviderEvent $event): ?DynamicFunctionStorage
     {
         $template_provider = $event->getTemplateProvider();
@@ -85,7 +88,11 @@ final class PipeArgumentsProvider implements DynamicFunctionStorageProviderInter
         $a = self::createParam('input', new Union([$aType]));
         $b = new Union([$bType]);
 
-        return new TClosure(Closure::class, [$a], $b);
+        // The TClosure constructor differs between Psalm 6 and 7, Type::getClosure() works on both.
+        /** @var TClosure $closure */
+        $closure = Type::getClosure()->getSingleAtomic();
+
+        return $closure->replace([$a], $b);
     }
 
     private static function createParam(string $name, Union $type): FunctionLikeParameter

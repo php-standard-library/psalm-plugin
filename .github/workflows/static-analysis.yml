@@ -8,8 +8,11 @@ on:
 
 jobs:
   static-analysis:
-    name: "static analysis"
+    name: "static analysis (psalm ${{ matrix.psalm }})"
     runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        psalm: ["^6.19", "^7"]
     steps:
       - name: "checkout"
         uses: "actions/checkout@v2"
@@ -17,13 +20,13 @@ jobs:
       - name: "installing PHP"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "8.1"
+          php-version: "8.4"
           ini-values: memory_limit=-1
           tools: composer:v2, cs2pr
           extensions: bcmath, mbstring, intl, sodium, json
 
       - name: "installing dependencies"
-        run: "composer update --no-interaction --no-progress"
+        run: "composer update --no-interaction --no-progress --with \"vimeo/psalm:${{ matrix.psalm }}\""
 
       - name: "running static analysis ( psalm )"
         run: "vendor/bin/psalm --shepherd --stats"

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Psl\Psalm\EventHandler\Regex\CaptureGroups;
 
+use Override;
 use Psalm\Plugin\EventHandler\Event\FunctionReturnTypeProviderEvent;
 use Psalm\Plugin\EventHandler\FunctionReturnTypeProviderInterface;
 use Psalm\Type;
@@ -14,6 +15,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
     /**
      * @return array<lowercase-string>
      */
+    #[Override]
     public static function getFunctionIds(): array
     {
         return [
@@ -21,6 +23,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
         ];
     }
 
+    #[Override]
     public static function getFunctionReturnType(FunctionReturnTypeProviderEvent $event): ?Type\Union
     {
         $argument_type = Argument::getType($event->getCallArgs(), $event->getStatementsSource(), 0);
@@ -51,7 +54,7 @@ final class FunctionReturnTypeProvider implements FunctionReturnTypeProviderInte
 
         return new Type\Union([new Type\Atomic\TGenericObject('Psl\Type\TypeInterface', [
             new Type\Union([
-                new Type\Atomic\TKeyedArray($properties)
+                Type\Atomic\TKeyedArray::make($properties)
             ])
         ])]);
     }
